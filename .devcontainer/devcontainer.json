@@ -1,0 +1,66 @@
+{
+  "name": "Getting Started with DevOps AI Skills",
+  "image": "mcr.microsoft.com/devcontainers/base:ubuntu",
+
+  "hostRequirements": {
+    "cpus": 4,
+    "memory": "16gb",
+    "storage": "32gb"
+  },
+
+  "features": {
+    "ghcr.io/devcontainers/features/node:1": { "version": "latest" },
+    "ghcr.io/devcontainers/features/python:1": { "version": "latest" },
+    "ghcr.io/devcontainers/features/go:1": { "version": "latest" },
+    "ghcr.io/devcontainers/features/github-cli:1": { "version": "latest" },
+    "ghcr.io/devcontainers/features/docker-in-docker:2": {},
+    "ghcr.io/devcontainers/features/kubectl-helm-minikube:1": {
+      "helm": "latest",
+      "kubectl": "latest",
+      "minikube": "none"
+    },
+
+    "ghcr.io/anthropics/devcontainer-features/claude-code:1.0": {},
+    "ghcr.io/dirien/devcontainer-feature-codex/codex:0": {},
+    "ghcr.io/dirien/devcontainer-feature-pulumi/pulumi:0": {}
+  },
+
+  "postStartCommand": {
+    "fix-claude-perms": "sudo chown -R vscode:vscode /home/vscode/.claude || true"
+  },
+
+  "postCreateCommand": "bash .devcontainer/post-create.sh ${containerWorkspaceFolder}",
+
+  "forwardPorts": [19999, 3030],
+  "portsAttributes": {
+    "19999": { "label": "Claude Code OAuth" },
+    "3030": { "label": "Slidev deck" }
+  },
+  "otherPortsAttributes": { "onAutoForward": "silent" },
+
+  "containerEnv": {
+    "NODE_OPTIONS": "--dns-result-order=ipv4first"
+  },
+
+  "remoteEnv": {
+    "ANTHROPIC_API_KEY": "${localEnv:ANTHROPIC_API_KEY}",
+    "OPENAI_API_KEY": "${localEnv:OPENAI_API_KEY}",
+    "GITHUB_TOKEN": "${localEnv:GITHUB_TOKEN}",
+    "PULUMI_ACCESS_TOKEN": "${localEnv:PULUMI_ACCESS_TOKEN}"
+  },
+
+  "mounts": ["source=devops-ai-skills-claude-config,target=/home/vscode/.claude,type=volume"],
+
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "anthropic.claude-code",
+        "pulumi.pulumi-vscode",
+        "redhat.vscode-yaml"
+      ],
+      "settings": {
+        "terminal.integrated.defaultProfile.linux": "bash"
+      }
+    }
+  }
+}

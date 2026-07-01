@@ -1,0 +1,3 @@
+name: lsp-demo
+runtime: nodejs
+description: A tiny Pulumi TypeScript program so the LSP demo has real cloud-SDK types to show.

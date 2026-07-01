@@ -1,0 +1,71 @@
+# apm.yml — the manifest for this workshop, managed by Microsoft APM.
+#
+# APM ("Agent Package Manager") is package.json for AI agents: declare your agentic
+# dependencies once, run `apm install`, and every teammate's agent (Claude Code,
+# Copilot, Cursor, Codex, Gemini, …) gets the same skills, prompts, and MCP servers.
+#   Install APM:  curl -sSL https://aka.ms/apm-unix | sh   (or: brew install microsoft/apm/apm)
+#   Then:         apm install   (integrates skills, hooks, LSP, MCP into .claude/)
+#
+# Our own primitives live under .apm/ and are picked up automatically:
+#   .apm/skills/golden-path-service/   .apm/skills/incident-triage/   .apm/skills/esc-secret-rotation/
+name: getting-started-with-devops-ai-skills
+version: 0.1.0
+description: DevOps Agent Skills workshop — build, share, and run skills with APM and Pulumi.
+author: Engin Diri
+license: Apache-2.0
+
+# Compile our primitives into Claude Code's native layout (.claude/skills/…).
+# Use `targets: [claude, copilot, cursor]` to fan out to more agents.
+targets:
+  - claude
+
+dependencies:
+  # Other people's skills — adopt before you build (chapter 01).
+  # APM resolves any git repo, pins it in apm.lock.yaml, and security-scans it on install.
+  apm:
+    # Pulumi's official Agent Skills (github.com/pulumi/agent-skills) — the core "pulumi"
+    # plugin: overview (router), best-practices, component, esc, automation-api, … (chapter 02).
+    - pulumi/agent-skills/pulumi
+    # One-way handoff from your local agent into a Pulumi Neo task.
+    - pulumi/agent-skills/delegation
+    # Community DevOps/SRE runbook skills — read-only by default (great templates, chapter 06).
+    # Reference specific skills (a path must resolve to a SKILL.md, not a category folder).
+    - bregman-arie/devops-sre-skills/skills/kubernetes/diagnose-crashloop
+    - bregman-arie/devops-sre-skills/skills/kubernetes/diagnose-imagepullbackoff
+    - bregman-arie/devops-sre-skills/skills/kubernetes/triage-pending-pods
+
+  # Live tools, not static knowledge: the Pulumi MCP server lets the agent query the
+  # registry, validate code, reach Pulumi Cloud, and delegate to Neo (chapter 03).
+  mcp:
+    - name: pulumi
+      registry: false          # self-defined server — use command below, don't look up a registry
+      transport: stdio
+      command: npx
+      args: ["-y", "@pulumi/mcp-server@latest", "stdio"]
+
+  # Language servers so the agent SEES real types + diagnostics and writes Pulumi that
+  # actually compiles, instead of hallucinating cloud-SDK APIs (chapter 02b). APM writes
+  # .lsp.json for Claude Code; it does NOT install the binaries — put them on $PATH yourself
+  # (npm i -g typescript typescript-language-server pyright · go install gopls). Each entry
+  # needs name + command + extensionToLanguage.
+  lsp:
+    - name: typescript-language-server   # TypeScript Pulumi programs
+      command: typescript-language-server
+      args: ["--stdio"]
+      extensionToLanguage:
+        ".ts": typescript
+        ".tsx": typescriptreact
+    - name: pyright                      # Python Pulumi programs
+      command: pyright-langserver
+      args: ["--stdio"]
+      extensionToLanguage:
+        ".py": python
+    - name: gopls                        # Go Pulumi programs
+      command: gopls
+      args: ["serve"]
+      extensionToLanguage:
+        ".go": go
+
+# Hooks are file-discovered from .apm/hooks/ (no manifest key). We ship a guardrail:
+#   .apm/hooks/block-pulumi-mutations.json — a PreToolUse hook on Bash that blocks
+#   `pulumi up` / `pulumi destroy` unless a human approves. Compiles into .claude/settings.json.

@@ -1,0 +1,12 @@
+{
+  "name": "lsp-demo",
+  "private": true,
+  "description": "Minimal Pulumi TS project for the LSP demo (real @pulumi/aws types)",
+  "devDependencies": {
+    "@types/node": "^20"
+  },
+  "dependencies": {
+    "@pulumi/aws": "^6.0.0",
+    "@pulumi/pulumi": "^3.0.0"
+  }
+}
