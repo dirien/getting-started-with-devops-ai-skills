@@ -907,7 +907,7 @@ hallucinates. With it, it gets the same red squiggles you do. APM only writes th
   "matcher": "Bash",
   "hooks": [{
     "type": "command",
-    "command": "${CLAUDE_PLUGIN_ROOT}/scripts/guard-pulumi.sh",
+    "command": "\"$CLAUDE_PROJECT_DIR\"/scripts/guard-pulumi.sh",
     "timeout": 10
   }]
 }]}

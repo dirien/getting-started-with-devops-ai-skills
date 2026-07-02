@@ -62,16 +62,22 @@ This repo ships [`.apm/hooks/block-pulumi-mutations.json`](../../.apm/hooks/bloc
 ```json
 { "PreToolUse": [{
   "matcher": "Bash",
-  "hooks": [{ "type": "command", "command": "${CLAUDE_PLUGIN_ROOT}/scripts/guard-pulumi.sh", "timeout": 10 }]
+  "hooks": [{ "type": "command", "command": "\"$CLAUDE_PROJECT_DIR\"/scripts/guard-pulumi.sh", "timeout": 10 }]
 }]}
 ```
+
+> Why `$CLAUDE_PROJECT_DIR` and not a relative path? Claude Code sets that variable when it
+> runs a hook, so the command resolves **absolutely** — even after the agent's shell has
+> `cd`'d into a scaffolded subproject. A relative `.claude/hooks/…` path breaks in that
+> case, and a hook that can't be found fails **open** (exit 127 is non-blocking; only
+> exit 2 blocks).
 
 The script ([`scripts/guard-pulumi.sh`](../../scripts/guard-pulumi.sh)) reads the proposed
 command from stdin and **exits `2` to block** `pulumi up` / `pulumi destroy`, feeding the
 reason back to the agent:
 
 ```bash
-apm install        # merges the hook into .claude/settings.json, copies the script under .claude/hooks/
+apm install        # merges the hook into .claude/settings.json; the command targets the repo's scripts/guard-pulumi.sh
 ```
 
 Verified behavior (run them yourself — and notice the last two rows):
