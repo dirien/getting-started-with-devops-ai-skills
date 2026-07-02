@@ -1,6 +1,6 @@
 lockfile_version: '1'
-generated_at: '2026-07-01T20:46:11.960009+00:00'
-apm_version: 0.22.0
+generated_at: '2026-07-02T11:45:33.931996+00:00'
+apm_version: 0.23.1
 dependencies:
 - repo_url: bregman-arie/devops-sre-skills
   name: devops-sre-skills
@@ -160,7 +160,6 @@ lsp_configs:
       .ts: typescript
       .tsx: typescriptreact
 local_deployed_files:
-- .claude/hooks/getting-started-with-devops-ai-skills/scripts/guard-pulumi.sh
 - .claude/skills/esc-secret-rotation
 - .claude/skills/esc-secret-rotation/SKILL.md
 - .claude/skills/esc-secret-rotation/scripts/find-references.sh
@@ -173,7 +172,6 @@ local_deployed_files:
 - .claude/skills/incident-triage/scripts/gather-diagnostics.sh
 - .claude/skills/incident-triage/templates/postmortem.md
 local_deployed_file_hashes:
-  .claude/hooks/getting-started-with-devops-ai-skills/scripts/guard-pulumi.sh: sha256:19e60a7f73f4f5ba3cf02a51e616672f15fb64d4c49245281a5fb36d4513f762
   .claude/skills/esc-secret-rotation/SKILL.md: sha256:db09ff599d2dadc063f05f6e831861f38110044b5b8605fe9d142a176bdde9c1
   .claude/skills/esc-secret-rotation/scripts/find-references.sh: sha256:d2859cc07c06da03e086cb2cca7094ea0d6883210aaa1c861f8ee7afb17dc540
   .claude/skills/golden-path-service/SKILL.md: sha256:845b979f9b089a46a65263bea1901fcf4bd1b71c2a6d5777b4010da996f2e03f
