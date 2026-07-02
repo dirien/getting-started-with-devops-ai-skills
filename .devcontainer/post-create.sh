@@ -3,6 +3,9 @@
 # parallel object form of postCreateCommand) because these steps depend on each other:
 # install the toolchain, then `apm install` to wire skills + MCP + LSP + hooks.
 set -uo pipefail
+# Codespaces runs lifecycle scripts with umask 077 — files extracted here (APM's
+# libpython, gopls) would land root-owned and unreadable. Force sane perms.
+umask 022
 export PATH="$HOME/.local/bin:$PATH"
 WS="${1:-$PWD}"
 cd "$WS"
