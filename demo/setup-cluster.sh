@@ -17,6 +17,15 @@ if ! kind get clusters 2>/dev/null | grep -qx "$CLUSTER"; then
   kind create cluster --name "$CLUSTER"
 else
   echo "==> kind cluster '$CLUSTER' already exists"
+  # A devcontainer rebuild keeps the inner-docker volume (so kind sees the cluster)
+  # but wipes ~/.kube/config. Re-export it; if the cluster is still unreachable,
+  # it's stale — recreate it.
+  kind export kubeconfig --name "$CLUSTER" 2>/dev/null || true
+  if ! kubectl cluster-info >/dev/null 2>&1; then
+    echo "==> cluster unreachable (stale after a rebuild?) — recreating"
+    kind delete cluster --name "$CLUSTER"
+    kind create cluster --name "$CLUSTER"
+  fi
 fi
 
 echo "==> applying the crashlooping 'payments' workload"
@@ -29,7 +38,11 @@ kubectl -n demo get pods -o wide || true
 cat <<EOF
 
 Ready. Now drive the skill, e.g. in Claude Code:
-  "Triage this — the payments pods are CrashLoopBackOff in the demo namespace."
+  "We have a prod incident: the payments pods are in CrashLoopBackOff in the demo
+   namespace. Triage it — gather diagnostics, classify severity, and propose a
+   stabilization plan."
+(That wording targets incident-triage; a bare "triage this crashloop" may match the
+ narrower community diagnose-crashloop runbook instead.)
 or run the bundled script directly:
   .apm/skills/incident-triage/scripts/gather-diagnostics.sh demo payments
 

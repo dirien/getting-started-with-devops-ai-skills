@@ -107,8 +107,11 @@ Fallback: a recording per artifact; at minimum the screenshot of the squiggle.
 
 ### Beat 3 — a complex skill under pressure: `incident-triage` (~4 min)
 
-1. Prompt: *"Triage this — the `payments` pods are in CrashLoopBackOff in the `demo`
-   namespace."*
+1. Prompt: *"We have a prod incident: the `payments` pods are in CrashLoopBackOff in the
+   `demo` namespace. Triage it — gather diagnostics, classify severity, and propose a
+   stabilization plan."* (Say it this way. A bare "triage this crashloop" can match the
+   narrower community `diagnose-crashloop` skill instead — fine as an aside on skill
+   collision, wrong as the planned beat.)
 2. Watch the shape of a complex skill do its job: it fires from the description, runs
    `scripts/gather-diagnostics.sh demo payments` (read-only; only the *output* enters
    context), classifies severity from `references/severity-matrix.md`, proposes a fix,
