@@ -11,20 +11,36 @@
 
 ## Pre-flight (before the talk, on the venue wifi if you can)
 
+**Devcontainer / Codespace** (the intended way): the container build already installed the
+LSP binaries, kind, and the APM CLI, ran `apm install`, and pulled the npm deps. Two scripts
+remain yours:
+
 ```bash
-demo/install-lsp-servers.sh     # put gopls / pyright / typescript-language-server on $PATH
-demo/prewarm.sh                 # apm install + pre-pull MCP + npm deps + checks (no cloud mutations)
-demo/setup-cluster.sh           # kind cluster + the crashlooping 'payments' pod for incident-triage
+demo/prewarm.sh                 # re-RUNS apm install + npm deps and checks MCP/LSP/kind — local writes only, no cloud mutations
+demo/setup-cluster.sh           # kind cluster + the crashlooping 'payments' pod — never automatic
 ```
 
-Then confirm four things, and do the Pulumi MCP OAuth dance in Claude Code now, not on stage:
+**Bare-metal** (no container): add the LSP installer before those two:
 
-- `apm install` resolves **14 skills + 1 hook** into `.claude/` and **3 LSP servers** into `.lsp.json`
+```bash
+demo/install-lsp-servers.sh     # put gopls / pyright / typescript-language-server on $PATH
+```
+
+**Auth is always manual** — do it now, not on stage: `pulumi login` (`pulumi whoami` to
+confirm), `claude` login, approve the project's `pulumi` MCP server, `/mcp` → authenticate.
+
+Then confirm five things:
+
+- `apm install` resolved **14 skills + 1 hook** into `.claude/` and **3 LSP servers** into `.lsp.json`
+- the hook is wired cwd-proof: `grep CLAUDE_PROJECT_DIR .claude/settings.json` hits
 - `pulumi whoami` works
 - `kubectl -n demo get pods` shows the `payments` pods in `CrashLoopBackOff`
 - `demo/pulumi-ts/index.ts` shows a red squiggle on `publicReadAccess`
 
 If any of these is red, switch that demo beat to its recording. The show doesn't change.
+Two hard-won notes: create the Codespace **the day before** (cold build ~10 min; a repo
+prebuild removes even that), and `slides/node_modules` is platform-specific — run
+`npm install` fresh on whichever machine actually presents the deck.
 
 ## The shape of the hour
 

@@ -44,8 +44,9 @@ installed without drowning the context window.
 
 ## Environment setup
 
-> The original course uses GitHub Codespaces. We keep it local-first so you can take
-> everything home, but a Codespace/devcontainer works identically.
+> Fastest path: open the repo in a **Codespace/devcontainer** (see the root README) —
+> everything below is pre-installed and `apm install` has already run. The manual steps
+> that follow are the local, no-container route.
 
 You'll need:
 

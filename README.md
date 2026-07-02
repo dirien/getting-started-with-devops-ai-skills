@@ -5,7 +5,7 @@
 > example and [Microsoft APM](https://microsoft.github.io/apm/) to manage the
 > agent primitives.
 
-**Presenter:** Engin Diri · Senior Solutions Architect, Pulumi
+**Presenters:** Engin Diri (Senior Solutions Architect) & Adam Gordon Bell (Community Engineer) · Pulumi
 **Format:** Workshop (≈ 60 min) · slides + follow-along chapters
 
 [![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/dirien/getting-started-with-devops-ai-skills)

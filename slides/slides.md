@@ -112,7 +112,7 @@ agenda (the arc of the workshop).
 <div class="zoom-content">
 
 <ul class="!mt-8 !text-[1.6rem] !leading-relaxed space-y-5">
-  <li>I'll <strong>present and demo</strong>, so you don't need to code along live</li>
+  <li>We'll <strong>present and demo</strong>, so you don't need to code along live</li>
   <li>Ask questions <strong>any time</strong>; treat this as a conversation</li>
   <li>Slides, chapters, and the finished skills go home in the <strong>repo</strong> (QR at the end)</li>
   <li>Everything I show, you can run yourself later. One chapter at a time.</li>
@@ -125,7 +125,7 @@ agenda (the arc of the workshop).
 </style>
 
 <!--
-~45s. Show-and-tell, not a lab. I drive; they watch and ask. Make the point that the
+~45s. Show-and-tell, not a lab. We drive; they watch and ask. Make the point that the
 repo is the takeaway, every demo is a folder they can work through at home.
 -->
 
