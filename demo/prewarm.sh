@@ -16,8 +16,12 @@ if command -v apm >/dev/null 2>&1; then note "ok  $(apm --version 2>/dev/null)";
 step "apm install (resolves Pulumi skills, community runbooks, MCP, LSP into .claude/)"
 ( cd "$ROOT" && apm install ) && { note "ok"; ok=$((ok+1)); } || { note "FAILED — fix before the talk"; warn=$((warn+1)); }
 
-step "pre-pull the Pulumi MCP server (npx cold-fetch is the #1 stage stall)"
-npx -y @pulumi/mcp-server@latest --help >/dev/null 2>&1 && { note "ok"; ok=$((ok+1)); } || { note "WARN — could not pre-pull @pulumi/mcp-server"; warn=$((warn+1)); }
+step "Pulumi MCP server reachable? (remote, hosted; OAuth happens in the agent)"
+code=$(curl -so /dev/null -w '%{http_code}' --max-time 10 https://mcp.ai.pulumi.com/mcp 2>/dev/null)
+case "$code" in
+  2*|3*|401|405|406) note "ok  https://mcp.ai.pulumi.com/mcp responds (HTTP $code)"; ok=$((ok+1)) ;;
+  *) note "WARN — mcp.ai.pulumi.com not reachable (HTTP ${code:-none}); check venue network"; warn=$((warn+1)) ;;
+esac
 
 step "LSP server binaries on \$PATH?"
 for b in typescript-language-server pyright-langserver gopls; do

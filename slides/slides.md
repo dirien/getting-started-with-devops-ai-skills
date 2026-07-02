@@ -109,13 +109,12 @@ repo is the takeaway, every demo is a folder they can work through at home.
 <div class="zoom-content">
 
 <ul class="!mt-8 !text-[1.55rem] !leading-relaxed space-y-4">
-  <li>What an Agent Skill is, and why DevOps needs them</li>
+  <li>What an Agent Skill is, and why DevOps should use them</li>
   <li>Find &amp; evaluate existing skills</li>
   <li>Connect &amp; configure the agent: skills, MCP, LSP, hooks</li>
-  <li>The anatomy of a skill</li>
-  <li>Build skills: from scratch, then complex</li>
+  <li>Same prompt, configured vs not</li>
+  <li>Building complex skills safely</li>
   <li>Design principles, maintenance &amp; removal</li>
-  <li>Turn an everyday runbook into a skill</li>
 </ul>
 
 </div>
@@ -125,14 +124,14 @@ repo is the takeaway, every demo is a folder they can work through at home.
 </style>
 
 <!--
-~30s. Seven beats. Don't read the sub-text, say the beat and move on. The arc:
-orient (what/why) → use what exists → understand → build → operate → make it yours.
+~30s. Six beats. Don't read the sub-text, say the beat and move on. The arc:
+orient (what/why) → use what exists → configure → prove it → build safely → operate.
 -->
 
 ---
 
 <div class="absolute inset-0 flex flex-col justify-center items-center px-20 text-center">
-  <h1 class="!text-[6.5rem] !leading-tight !font-semibold !tracking-tight !m-0 text-[var(--p-primary)] !max-w-[95%]">What is an Agent Skill?</h1>
+  <h1 class="!text-[6.5rem] !leading-tight !font-semibold !tracking-tight !m-0 !text-[var(--p-primary)] !max-w-[95%]">What is an Agent Skill?</h1>
 </div>
 
 <!--
@@ -173,75 +172,195 @@ Skills turn "the thing in the wiki nobody reads" into something the agent execut
 
 # A skill is a folder with a `SKILL.md`
 
+<div class="grid grid-cols-2 gap-8 mt-2 items-start">
+  <div class="big-code">
+
 ```markdown
 ---
 name: pulumi-stack-bootstrap
 description: >-
-  Scaffold a new Pulumi project on our org standard: ESC for config,
-  OIDC for cloud auth, preview-before-apply. Use when someone asks to
+  Scaffold a new Pulumi project on our org
+  standard: ESC for config, OIDC for auth,
+  preview-before-apply. Use when asked to
   start a new stack, service, or IaC project.
 ---
 
 # Pulumi stack bootstrap
 
-1. Ask for cloud (aws|gcp|azure) and language (ts|python|go).
+1. Ask cloud (aws|gcp|azure) + language (ts|py|go).
 2. `pulumi new <cloud>-<language> --name <name>`
 3. Wire config to ESC, not local secret files.
-4. Always `pulumi preview` before suggesting `pulumi up`.
+4. Always `pulumi preview` before `pulumi up`.
 ```
 
-<p v-click class="!mt-7 !text-[1.5rem] !leading-relaxed">
-  YAML frontmatter (<code>name</code> + <code>description</code>) on top, plain-Markdown
-  instructions below. That's the whole format.
-</p>
+  </div>
+  <div>
+    <p v-click class="!text-[1.35rem] !leading-relaxed">
+      YAML frontmatter (<code>name</code> + <code>description</code>) on top, plain-Markdown
+      instructions below. That's the whole format.
+    </p>
+    <p v-click class="!mt-7 !text-[1.3rem] !leading-relaxed !mb-2">Drop that folder in one of a few places:</p>
+    <ul v-click class="!text-[1.2rem] !leading-relaxed space-y-2">
+      <li><code>.claude/skills/&lt;name&gt;/</code> this project (commit to share)</li>
+      <li><code>~/.claude/skills/&lt;name&gt;/</code> you, across every project</li>
+      <li><code>&lt;plugin&gt;/skills/&lt;name&gt;/</code> from a plugin, namespaced</li>
+      <li>Enterprise: managed settings, org-wide</li>
+    </ul>
+  </div>
+</div>
+
+<div v-click class="prec-band">
+  <span class="prec-label">Same name in two spots? Highest wins:</span>
+  <span class="prec-chip"><ph-buildings class="text-[var(--p-primary)]" /> Enterprise</span>
+  <ph-caret-right class="prec-arrow" />
+  <span class="prec-chip"><ph-user class="text-[var(--p-primary)]" /> Personal</span>
+  <ph-caret-right class="prec-arrow" />
+  <span class="prec-chip"><ph-folder class="text-[var(--p-primary)]" /> Project</span>
+</div>
 
 <style scoped>
-:deep(.slidev-code) {
-  font-size: 1.15rem !important;
-  line-height: 1.5 !important;
-  max-width: 92%;
-  margin: 0.5rem 0 0;
-  padding: 1rem 1.4rem;
+.big-code :deep(.slidev-code) {
+  font-size: 0.92rem !important;
+  line-height: 1.42 !important;
+  margin: 0 !important;
+  padding: 0.9rem 1.1rem;
   border-radius: 12px;
+}
+.prec-band {
+  margin-top: 2.4rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+.prec-label {
+  font-size: 1.6rem;
+  color: var(--p-fg-muted);
+  margin-right: 0.4rem;
+}
+.prec-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 1.75rem;
+  font-weight: 600;
+  color: var(--p-fg);
+  background: rgba(126, 107, 255, 0.14);
+  border: 1px solid rgba(126, 107, 255, 0.35);
+  border-radius: 12px;
+  padding: 0.45rem 1.05rem;
+  white-space: nowrap;
+}
+.prec-arrow {
+  font-size: 1.55rem;
+  color: var(--p-fg-muted);
+  flex-shrink: 0;
 }
 </style>
 
 <!--
-~60s. Show the format. The frontmatter is the contract; the body is the procedure.
-This is a real DevOps skill, note the "preview before up" safety default. Don't read
-the code; point at name/description and the numbered steps.
+~70s. Show the format, then WHERE it lives. Frontmatter is the contract; the body is the
+procedure. Four homes: project (.claude/skills, commit to share), personal (~/.claude/skills),
+plugin (namespaced), and enterprise (managed, org-wide). When names collide, enterprise beats
+personal beats project. In this workshop, `apm install` writes them into .claude/skills for you.
 -->
 
 ---
 
 # Progressive disclosure: why you can have dozens
 
-<div class="grid grid-cols-2 gap-10 mt-4">
-  <div class="wi-mermaid">
-
-```mermaid {scale: 0.95, theme: 'base', themeVariables: { 'background': 'transparent', 'primaryColor': '#1f1d3a', 'primaryTextColor': '#e9e7ff', 'primaryBorderColor': '#7e6bff', 'lineColor': '#9b8cff', 'fontFamily': 'Inter, ui-sans-serif, system-ui', 'fontSize': '15px' } }
-flowchart TB
-  l1["<b>Level 1 · always loaded</b><br/>name + description<br/>(~tens of tokens)"]
-  l2["<b>Level 2 · on trigger</b><br/>the SKILL.md body"]
-  l3["<b>Level 3 · on demand</b><br/>scripts · references · templates"]
-  l1 -->|"task looks relevant"| l2 -->|"step needs it"| l3
-```
-
+<div class="pd-row">
+  <div class="pd-card">
+    <div class="pd-tag"><ph-eye class="text-[var(--p-primary)]" /> Level 1 · always loaded</div>
+    <p class="pd-what"><code>name</code> + <code>description</code></p>
+    <p class="pd-cost">of <em>every</em> skill · ~100 tokens each</p>
   </div>
-  <div>
-    <ul class="!mt-2 !text-[1.4rem] !leading-relaxed space-y-4">
-      <li v-click>The agent reads every skill's <span class="hl">name + description</span> cheaply, on <em>every</em> prompt.</li>
-      <li v-click>Only the <span class="hl">relevant</span> skill's body loads into context.</li>
-      <li v-click>Bundled files load <span class="hl">only when a step needs them.</span></li>
-      <li v-click class="!font-semibold"><span class="hl-soft">Result:</span> install 50 skills, pay for the one you're using.</li>
-    </ul>
+
+  <ph-caret-right class="pd-arrow" />
+
+  <div class="pd-card pd-card--accent">
+    <div class="pd-tag pd-tag--accent"><ph-file-text class="text-[var(--p-primary)]" /> Level 2 · on trigger</div>
+    <p class="pd-what">the <code>SKILL.md</code> body</p>
+    <p class="pd-cost">loads only when the task matches</p>
+  </div>
+
+  <ph-caret-right class="pd-arrow" />
+
+  <div class="pd-card">
+    <div class="pd-tag"><ph-folders class="text-[var(--p-primary)]" /> Level 3 · on demand</div>
+    <p class="pd-what">scripts · references · templates</p>
+    <p class="pd-cost">loads only when a step needs it</p>
   </div>
 </div>
 
+<p class="pd-takeaway" v-click>
+  Install <span class="hl">dozens</span> of skills. Only the one the agent actually uses ever
+  reaches the <span class="hl">context window</span>.
+</p>
+
+<style scoped>
+.pd-row {
+  display: flex;
+  align-items: stretch;
+  justify-content: center;
+  gap: 1rem;
+  margin-top: 3.2rem;
+}
+.pd-card {
+  flex: 1;
+  background: var(--p-bg-elevated);
+  border: 1.5px solid var(--p-border);
+  border-radius: 16px;
+  padding: 1.8rem 1.6rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+}
+.pd-card--accent {
+  border-color: color-mix(in srgb, var(--p-primary) 60%, var(--p-border));
+  background: rgba(126, 107, 255, 0.06);
+}
+.pd-tag {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: var(--slidev-font-mono);
+  font-weight: 700;
+  font-size: 1.15rem;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  color: var(--p-fg-muted);
+}
+.pd-tag--accent { color: var(--p-primary); }
+.pd-what {
+  margin: 0;
+  font-size: 1.75rem;
+  font-weight: 600;
+  color: var(--p-fg);
+  line-height: 1.2;
+}
+.pd-cost { margin: 0; font-size: 1.2rem; color: var(--p-fg-muted); line-height: 1.35; }
+.pd-arrow {
+  font-size: 2.2rem;
+  color: var(--p-fg-muted);
+  align-self: center;
+  flex-shrink: 0;
+}
+.pd-takeaway {
+  margin: 3rem 0 0;
+  max-width: 95%;
+  text-align: left;
+  font-size: 1.85rem;
+  line-height: 1.45;
+}
+</style>
+
 <!--
-~60s. This is the unlock. Three levels. The description is the trigger, it's the most
-important line you write (we come back to this in design principles). Contrast with
-stuffing everything into CLAUDE.md, which is always-on and bloats every request.
+~60s. This is the unlock: three levels, cheap to expensive. Level 1 metadata is always in
+the prompt (a handful of tokens per skill). Level 2 body loads only when the skill triggers.
+Level 3 files load only when a step reaches for them. So dozens of skills cost almost nothing
+in context until used. Contrast with CLAUDE.md, which is always-on and bloats every request.
 -->
 
 ---
@@ -266,23 +385,27 @@ incident-triage/
   </div>
   <div>
     <ul class="!mt-2 !text-[1.4rem] !leading-relaxed space-y-4">
-      <li><span class="hl">SKILL.md</span> stays short. It's what loads on trigger.</li>
-      <li><span class="hl">references/</span> hold the long detail, read only when needed.</li>
-      <li><span class="hl">scripts/</span> do the deterministic steps, so the model never re-derives a fragile command.</li>
-      <li><span class="hl">templates/</span> are the artifacts it fills in (a postmortem, a PR body).</li>
+      <li v-click><span class="hl">SKILL.md</span> stays short. It's what loads on trigger.</li>
+      <li v-click><span class="hl">references/</span> hold the long detail, read only when needed.</li>
+      <li v-click><span class="hl">scripts/</span> do the deterministic steps, so the model never re-derives a fragile command.</li>
+      <li v-click><span class="hl">templates/</span> are the artifacts it fills in (a postmortem, a PR body).</li>
     </ul>
   </div>
 </div>
 
-<aside class="info-card">
-  <div class="info-card__label">Prose for judgement · scripts for procedure</div>
-  <p>If a step is "run these exact commands," ship a script and tell the agent to run it.</p>
-</aside>
+<p v-click class="!mt-9 !text-[2rem] !leading-relaxed text-left !max-w-[95%]">
+  <span class="hl">Match freedom to fragility:</span> judgement calls stay in prose; fragile,
+  must-be-exact steps become a <span class="hl">script the agent just runs</span>. Anthropic
+  calls this <em>degrees of freedom</em>.
+</p>
 
 <!--
-~60s. The "makeup of a skill." The body points at the bundled files: "to classify
-severity, read references/severity-matrix.md." Lazy-loaded. The scripts vs prose line
-is the one to land, deterministic steps belong in scripts.
+~60s. The "makeup of a skill." Reveal each part on click. The body points at the bundled
+files ("to classify severity, read references/severity-matrix.md"), lazy-loaded. Land the
+last line, which is Anthropic's real "degrees of freedom" principle: match specificity to a
+task's fragility. Open field (many paths) = prose/high freedom; narrow bridge (one safe way,
+e.g. a db migration) = an exact script/low freedom. Scripts also keep it deterministic and
+save tokens (the code never enters context).
 -->
 
 ---
@@ -290,45 +413,42 @@ is the one to land, deterministic steps belong in scripts.
 # Skill ≠ MCP ≠ CLAUDE.md
 
 <div class="grid grid-cols-3 gap-6 mt-6">
-  <div class="gpu-card gpu-card--primary">
+  <div v-click class="gpu-card gpu-card--primary">
     <div class="gpu-caption gpu-caption--accent">Agent Skill</div>
     <p class="!mt-3 !text-[1.15rem] !leading-relaxed"><strong>Knowledge + procedure.</strong> "Here's how we do X." Loaded on demand. Portable folder of Markdown + scripts.</p>
   </div>
-  <div class="gpu-card gpu-card--muted">
+  <div v-click class="gpu-card gpu-card--muted">
     <div class="gpu-caption gpu-caption--muted">MCP server</div>
     <p class="!mt-3 !text-[1.15rem] !leading-relaxed"><strong>Tools + live data.</strong> "Here's an API I can call." A running server the agent connects to.</p>
   </div>
-  <div class="gpu-card gpu-card--muted">
+  <div v-click class="gpu-card gpu-card--muted">
     <div class="gpu-caption gpu-caption--muted">CLAUDE.md / AGENTS.md</div>
     <p class="!mt-3 !text-[1.15rem] !leading-relaxed"><strong>Always-on context.</strong> Project rules loaded into <em>every</em> request. No triggering, no scoping.</p>
   </div>
 </div>
 
-<aside class="info-card">
-  <div class="info-card__label">They compose</div>
-  <p>A skill tells the agent <strong>how</strong> to use the Pulumi <strong>MCP</strong> server. Your <strong>CLAUDE.md</strong> can point at the skills your repo expects. Best results use all three.</p>
-</aside>
+<p v-click class="!mt-9 !text-[2rem] !leading-relaxed text-left !max-w-[95%]">
+  <span class="hl">They compose:</span> a skill tells the agent <span class="hl">how</span> to use
+  the Pulumi <span class="hl">MCP</span> server, and your <span class="hl">CLAUDE.md</span> points
+  at the skills your repo expects. Best results use all three.
+</p>
 
 <!--
-~60s. Clear up the confusion before it derails the room. Skill = how-to (on demand).
-MCP = tools/live data (a server). CLAUDE.md = always-on rules. They're complementary;
-the Pulumi skills literally teach the agent how to drive the Pulumi MCP server.
+~60s. Clear up the confusion before it derails the room. Reveal one card per click:
+Skill = how-to (on demand). MCP = tools/live data (a server). CLAUDE.md = always-on rules.
+Then the composed payoff: they're complementary; the Pulumi skills literally teach the
+agent how to drive the Pulumi MCP server.
 -->
 
 ---
 
-<div class="absolute inset-0 flex flex-col items-center justify-center px-20 text-center">
-  <h1 class="!text-[6rem] !font-semibold !tracking-tight !leading-tight !m-0 !text-[var(--p-primary)] flex items-center gap-6">
-    Why DevOps
-    <span>=</span>
-    <span class="!text-[7rem]">❤️</span>
-    skills
-  </h1>
+<div class="absolute inset-0 flex flex-col justify-center items-center px-20 text-center">
+  <h1 class="!text-[6rem] !leading-tight !font-semibold !tracking-tight !m-0 !text-[var(--p-primary)] !max-w-[95%]">Why DevOps should use skills too</h1>
 </div>
 
 <!--
-Pivot to the DevOps angle. The job is repeatable judgement, the exact shape of a skill.
-This is where the room leans in: their runbooks, encoded.
+Pivot to the DevOps angle, echoing the agenda line. The job is repeatable judgement, the
+exact shape of a skill. This is where the room leans in: their runbooks, encoded.
 -->
 
 ---
@@ -343,7 +463,7 @@ This is where the room leans in: their runbooks, encoded.
 </p>
 
 <p v-click class="!mt-6 !text-[1.4rem] !leading-relaxed">
-  Pipeline triage. Terraform drift. <code>CrashLoopBackOff</code>. Cost spikes. The Sev1
+  Pipeline triage. Pulumi drift. <code>CrashLoopBackOff</code>. Cost spikes. The Sev1
   at 2am. That's <span class="hl-soft">repeatable judgement</span>. Not novel code.
 </p>
 
@@ -367,7 +487,7 @@ the agent is already deploying infra; skills decide whether it does it your way.
 # Turn the wiki nobody reads into something the agent runs
 
 <div class="grid grid-cols-2 gap-10 mt-6">
-  <div class="gpu-card gpu-card--muted">
+  <div v-click class="gpu-card gpu-card--muted">
     <div class="gpu-caption gpu-caption--muted">Today</div>
     <ul class="!mt-3 !text-[1.2rem] !leading-relaxed space-y-2">
       <li>Runbook in a wiki, last edited 18 months ago</li>
@@ -376,7 +496,7 @@ the agent is already deploying infra; skills decide whether it does it your way.
       <li>You re-paste your conventions into every prompt</li>
     </ul>
   </div>
-  <div class="gpu-card gpu-card--primary">
+  <div v-click class="gpu-card gpu-card--primary">
     <div class="gpu-caption gpu-caption--accent">With skills</div>
     <ul class="!mt-3 !text-[1.2rem] !leading-relaxed space-y-2">
       <li>Runbook is a <code>SKILL.md</code> in git, reviewed like code</li>
@@ -387,21 +507,22 @@ the agent is already deploying infra; skills decide whether it does it your way.
   </div>
 </div>
 
-<aside class="info-card">
-  <div class="info-card__label">The stack in 2026</div>
-  <p><strong>Skills</strong> = the know-how · <strong>MCP servers</strong> = governed access to real systems (Pulumi, Terraform, Vault, Datadog) · <strong>the agent</strong> = orchestration. We use all three today.</p>
-</aside>
+<p v-click class="!mt-9 !text-[2rem] !leading-relaxed text-left !max-w-[95%]">
+  <span class="hl">The stack in 2026:</span> skills carry the <span class="hl">know-how</span>,
+  MCP servers give <span class="hl">governed access</span> to real systems (Pulumi, Vault, Datadog),
+  and the agent <span class="hl">orchestrates</span>. We use all three today.
+</p>
 
 <!--
-~60s. Left/right before-after. The payoff line: senior-engineer judgement encoded once,
-distributed to every engineer's agent. Land the "skills + MCP + agent" division of labor,
-it frames the whole rest of the workshop.
+~60s. Left/right before-after, one card per click. The payoff line: senior-engineer
+judgement encoded once, distributed to every engineer's agent. Land the "skills + MCP +
+agent" division of labor, it frames the whole rest of the workshop.
 -->
 
 ---
 
 <div class="absolute inset-0 flex flex-col justify-center items-center px-20 text-center">
-  <h1 class="!text-[6rem] !leading-tight !font-semibold !tracking-tight !m-0 text-[var(--p-primary)] !max-w-[95%]">Find &amp; evaluate skills</h1>
+  <h1 class="!text-[6rem] !leading-tight !font-semibold !tracking-tight !m-0 !text-[var(--p-primary)] !max-w-[95%]">Find &amp; evaluate skills</h1>
 </div>
 
 <!--
@@ -418,7 +539,7 @@ skill that's going to touch your infrastructure. (APM + Pulumi catalogue slides 
   <div>
     <ul class="!mt-2 !text-[1.35rem] !leading-relaxed space-y-3">
       <li><strong>Vendor sets:</strong> Pulumi ships <code>pulumi/agent-skills</code> (Apache-2.0, 4 plugin groups); cloud providers ship theirs</li>
-      <li>The open hub, <code>agentskills.io</code>, and Anthropic's <code>anthropics/skills</code></li>
+      <li>The skills directory, <code>skills.sh</code>, and Anthropic's <code>anthropics/skills</code></li>
       <li>Community runbooks like <code>bregman-arie/devops-sre-skills</code> and <code>dirien/claude-skills</code></li>
       <li>And your own org repo, full of skills your teammates already wrote</li>
     </ul>
@@ -473,19 +594,8 @@ write-capable skill is a supply-chain surface. The rule of thumb is the takeaway
 
 ---
 
-<div class="absolute inset-0 flex flex-col items-center justify-center px-20 text-center">
-  <h1 class="!text-[10rem] !leading-none !font-bold !tracking-[0.08em] !m-0 !text-[var(--p-fg)]">DEMO</h1>
-</div>
-
-<!--
-Live demo, discover & evaluate. `npx skills find`, browse pulumi/agent-skills on GitHub,
-open a SKILL.md, read its description + a script, and decide adopt vs build. Keep it 2 min.
--->
-
----
-
 <div class="absolute inset-0 flex flex-col justify-center items-center px-20 text-center">
-  <h1 class="!text-[6rem] !leading-tight !font-semibold !tracking-tight !m-0 text-[var(--p-primary)] !max-w-[95%]">Connect, configure &amp; use</h1>
+  <h1 class="!text-[6rem] !leading-tight !font-semibold !tracking-tight !m-0 !text-[var(--p-primary)] !max-w-[95%]">Connect, configure &amp; use</h1>
 </div>
 
 <!--
@@ -499,7 +609,7 @@ where APM enters, the manifest that makes installs reproducible for the whole te
 
 <div class="grid grid-cols-2 gap-8 mt-4">
   <div class="gpu-card gpu-card--muted">
-    <div class="gpu-caption gpu-caption--muted">Universal CLI (agentskills.io)</div>
+    <div class="gpu-caption gpu-caption--muted">Universal CLI (skills.sh)</div>
 
 ```bash
 # Works for Claude Code, Cursor,
@@ -529,7 +639,12 @@ npx skills add pulumi/agent-skills \
 </aside>
 
 <style scoped>
-:deep(.slidev-code) { font-size: 1.05rem !important; margin: 0.3rem 0 0 !important; }
+:deep(.slidev-code) {
+  font-size: 1.05rem !important;
+  line-height: 1.5 !important;
+  margin: 0.3rem 0 0 !important;
+  padding: 0.8rem 1rem !important;
+}
 </style>
 
 <!--
@@ -583,11 +698,10 @@ dependencies:
     # a community runbook (path resolves to a SKILL.md):
     - bregman-arie/devops-sre-skills/skills/kubernetes/diagnose-crashloop
   mcp:
-    - name: pulumi
-      registry: false                     # self-defined server (use the command below)
-      transport: stdio
-      command: npx
-      args: ["-y", "@pulumi/mcp-server@latest", "stdio"]
+    - name: pulumi                        # Pulumi's hosted MCP server (OAuth on first use)
+      registry: false
+      transport: http
+      url: https://mcp.ai.pulumi.com/mcp
   # lsp: language servers (next slide) · hooks live in .apm/hooks/
 ```
 
@@ -771,7 +885,7 @@ point at the real enforcement: Pulumi Cloud deployment policy + OIDC creds, serv
 
 ---
 
-# Show the delta: same prompt, off vs on
+# Same prompt, configured vs not
 
 <div class="grid grid-cols-2 gap-8 mt-3">
   <div class="gpu-card gpu-card--muted">
@@ -802,11 +916,6 @@ new aws.s3.BucketV2("data", {
   </div>
 </div>
 
-<aside class="info-card">
-  <div class="info-card__label">This is the proof, not a promise</div>
-  <p>Same prompt, two configs. That delta <em>is</em> the thesis. Run it live: <code>demo/pulumi-ts</code> ships the red squiggle on <code>publicReadAccess</code> ready to show.</p>
-</aside>
-
 <style scoped>
 :deep(.slidev-code) { font-size: 0.95rem !important; line-height: 1.4 !important; }
 </style>
@@ -814,8 +923,9 @@ new aws.s3.BucketV2("data", {
 <!--
 ~90s. THE money shot (PRESENTER.md protects this demo above all). Don't just assert config
 helps; show it. Naked: invents `publicReadAccess`, skips preview. Configured: LSP flags the
-arg in-editor, the golden-path skill adds standard tags, the hook stops `pulumi up`. If you
-only get one demo through, it's this one.
+arg in-editor, the golden-path skill adds standard tags, the hook stops `pulumi up`. Run it
+live if you can: demo/pulumi-ts ships the red squiggle on publicReadAccess ready to show.
+If you only get one demo through, it's this one.
 -->
 
 ---
@@ -848,70 +958,13 @@ only get one demo through, it's this one.
 <style scoped>
 .pr-card { max-width: 100%; margin: 0; border: 1px solid rgba(126,107,255,0.4); border-radius: 12px; background: rgba(126,107,255,0.06); }
 .pr-card__body { padding: 0.9rem 1.2rem; font-size: 1.3rem; }
-:deep(.slidev-code) { font-size: 1.1rem !important; }
+:deep(.slidev-code) { font-size: 1.1rem !important; line-height: 1.5 !important; }
 </style>
 
 <!--
 ~60s. The magic moment: you didn't say "use the skill." The agent matched your plain
 request to the skill's description and ran it, with the safety defaults baked in
 (preview, no unprompted up). That's the whole value: your playbook, automatically.
--->
-
----
-
-<div class="absolute inset-0 flex flex-col items-center justify-center px-20 text-center">
-  <h1 class="!text-[10rem] !leading-none !font-bold !tracking-[0.08em] !m-0 !text-[var(--p-fg)]">DEMO</h1>
-</div>
-
-<!--
-Live demo, apm install + compile, then drive golden-path-service inside Claude Code:
-"start a new service" → the skill triggers → preview. Show .claude/skills/ got populated.
--->
-
----
-
-<div class="absolute inset-0 flex flex-col justify-center items-center px-20 text-center">
-  <h1 class="!text-[6rem] !leading-tight !font-semibold !tracking-tight !m-0 text-[var(--p-primary)] !max-w-[95%]">Build your own</h1>
-</div>
-
-<!--
-Section divider. Now author. Simple first (one file), then complex (scripts + references).
-The whole point: your runbooks become skills.
--->
-
----
-
-# From scratch: one file, two required fields
-
-```markdown
----
-name: golden-path-service          # lowercase-hyphens, matches the folder
-description: >-                      # THE TRIGGER: what it does AND when
-  Scaffold a new service on our golden path: Pulumi + ESC + OIDC,
-  preview-before-apply. Use when someone asks to start a new stack,
-  service, or IaC project.
----
-
-# Golden path: new service
-1. Ask for cloud (aws|gcp|azure) and language (ts|python|go).
-2. pulumi new <cloud>-<language> …
-3. Wire config to ESC, not local secret files.
-4. Always `pulumi preview` before suggesting `pulumi up`.
-```
-
-<aside class="info-card">
-  <div class="info-card__label">That's a complete skill</div>
-  <p>Drop it at <code>.apm/skills/golden-path-service/SKILL.md</code>, run <code>apm install</code>, and the agent can use it. The <code>description</code> is the only line you must get right.</p>
-</aside>
-
-<style scoped>
-:deep(.slidev-code) { font-size: 1.1rem !important; line-height: 1.5 !important; max-width: 94%; margin: 0.2rem 0 0; padding: 0.9rem 1.3rem; border-radius: 12px; }
-</style>
-
-<!--
-~75s. Author a real skill live-ish. The frontmatter is the contract; name matches the
-folder, description is the trigger. Body is just numbered steps with safety baked in.
-This is the simple/instructions-only skill, the course's recursive-code-review analog.
 -->
 
 ---
@@ -985,27 +1038,6 @@ and #6 (safe by default), the two that matter most for DevOps. The rest are on t
 
 ---
 
-<div class="absolute inset-0 flex flex-col items-center justify-center px-20 text-center">
-  <h1 class="!text-[10rem] !leading-none !font-bold !tracking-[0.08em] !m-0 !text-[var(--p-fg)]">DEMO</h1>
-</div>
-
-<!--
-Live demo, author golden-path-service from scratch, apm install, run it. Then show
-incident-triage's tree and run gather-diagnostics.sh against a broken pod. Read-only proof.
--->
-
----
-
-<div class="absolute inset-0 flex flex-col justify-center items-center px-20 text-center">
-  <h1 class="!text-[6rem] !leading-tight !font-semibold !tracking-tight !m-0 text-[var(--p-primary)] !max-w-[95%]">Operate them</h1>
-</div>
-
-<!--
-Section divider. Skills are software, version, update, remove. Two short lessons.
--->
-
----
-
 # Keep them current · remove them clean
 
 <div class="grid grid-cols-2 gap-10 mt-4">
@@ -1033,84 +1065,6 @@ Section divider. Skills are software, version, update, remove. Two short lessons
 ~75s. Two lessons in one. Left: maintenance, the killer line is "stale skill is worse than
 a stale doc because the agent acts on it." Right: removal, prune for context + mis-trigger
 hygiene; disable when unsure. The course's 01_09e branch literally ends empty.
--->
-
----
-
-<div class="absolute inset-0 flex flex-col justify-center items-center px-20 text-center">
-  <h1 class="!text-[5.4rem] !leading-tight !font-semibold !tracking-tight !m-0 text-[var(--p-primary)] !max-w-[95%]">Turn your workflows into skills</h1>
-</div>
-
-<!--
-The close-the-loop section. The habit: do it twice, capture it the third time. Their
-runbooks, running themselves.
--->
-
----
-
-# The habit: do it twice, capture it
-
-<div class="grid grid-cols-2 gap-10 mt-2">
-  <div class="wi-mermaid">
-
-```mermaid {scale: 0.95, theme: 'base', themeVariables: { 'background': 'transparent', 'primaryColor': '#1f1d3a', 'primaryTextColor': '#e9e7ff', 'primaryBorderColor': '#7e6bff', 'lineColor': '#9b8cff', 'fontFamily': 'Inter, ui-sans-serif, system-ui', 'fontSize': '15px' } }
-flowchart TB
-  a["Do a task<br/>(twice)"] --> b["Write the<br/>steps down"]
-  b --> c["Wrap as SKILL.md<br/>+ a script"]
-  c --> d["Agent runs it<br/>every time after"]
-  d --> e["Refine when<br/>it misfires"] --> c
-```
-
-  </div>
-  <div>
-    <p class="!text-[1.25rem] !leading-relaxed !mb-3 text-[var(--p-fg-muted)]">Five everyday workflows worth capturing:</p>
-    <ul class="!text-[1.2rem] !leading-relaxed space-y-2">
-      <li>"Start a new service" → <span class="chip">golden-path-service</span></li>
-      <li>"We leaked a key" → <span class="chip">esc-secret-rotation</span></li>
-      <li>"Preview env for this PR" → ephemeral stack up/down</li>
-      <li>"Pod won't start" → <span class="chip">incident-triage</span></li>
-      <li>"Is prod tagged right?" → tag/region audit</li>
-    </ul>
-  </div>
-</div>
-
-<!--
-~60s. The takeaway habit. The loop diagram, then five concrete DevOps workflows, three
-of which are the skills we built today. The message: this isn't exotic; it's your Tuesday,
-written down once.
--->
-
----
-
-# Honest about scope
-
-<div class="grid grid-cols-2 gap-10 mt-4">
-  <div class="gpu-card gpu-card--muted">
-    <div class="gpu-caption gpu-caption--muted">Pulumi-specific today</div>
-    <ul class="!mt-3 !text-[1.2rem] !leading-relaxed space-y-2">
-      <li>The Pulumi skills, the MCP server, ESC, Neo, the <code>pulumi up</code> hook</li>
-      <li>Most of today's 14 skills assume Pulumi</li>
-    </ul>
-  </div>
-  <div class="gpu-card gpu-card--primary">
-    <div class="gpu-caption gpu-caption--accent">Ports anywhere</div>
-    <ul class="!mt-3 !text-[1.2rem] !leading-relaxed space-y-2">
-      <li>The <span class="hl">method</span>: skills + LSP + hooks via APM, on the open <code>agentskills.io</code> standard</li>
-      <li>Swap in Terraform / Helm / ArgoCD skills; the community runbooks are your starting point</li>
-    </ul>
-  </div>
-</div>
-
-<aside class="info-card">
-  <div class="info-card__label">Two things I'll say out loud</div>
-  <p><strong>opencode</strong> is in the abstract; today's build is Claude Code (APM writes LSP for Claude + Copilot CLI only), and the method is identical for opencode. The "20%+ of deployments" figure is Pulumi's own (Joe Duffy, '26), a forecast, not an independent benchmark.</p>
-</aside>
-
-<!--
-~45s. Pre-empt the two heckles: "this is a Pulumi ad" and "where's opencode / your stat."
-Own it. The Pulumi-specific stuff is the example; the method (skills+LSP+hooks via APM on
-an open standard) is the takeaway, and it ports to Terraform/Helm/ArgoCD. opencode: same
-method, Claude Code today. The stat: vendor forecast, attribute it.
 -->
 
 ---
@@ -1188,3 +1142,4 @@ Thank you. Scan to connect on LinkedIn, grab the workshop repo (slides + chapter
 skills we built), and the Pulumi AI/skills docs. Then go capture your next runbook.
 NOTE: repo-qr.png still points at the old demo repo, regenerate it for this repo's URL.
 -->
+

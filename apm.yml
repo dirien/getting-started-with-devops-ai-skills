@@ -36,12 +36,12 @@ dependencies:
 
   # Live tools, not static knowledge: the Pulumi MCP server lets the agent query the
   # registry, validate code, reach Pulumi Cloud, and delegate to Neo (chapter 03).
+  # It's a REMOTE, hosted server (OAuth on first use) — no local process to run.
   mcp:
     - name: pulumi
-      registry: false          # self-defined server — use command below, don't look up a registry
-      transport: stdio
-      command: npx
-      args: ["-y", "@pulumi/mcp-server@latest", "stdio"]
+      registry: false          # self-defined server — don't look it up in a registry
+      transport: http
+      url: https://mcp.ai.pulumi.com/mcp
 
   # Language servers so the agent SEES real types + diagnostics and writes Pulumi that
   # actually compiles, instead of hallucinating cloud-SDK APIs (chapter 02b). APM writes

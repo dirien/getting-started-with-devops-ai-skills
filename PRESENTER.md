@@ -20,27 +20,25 @@ the `payments` pods are `CrashLoopBackOff`; `demo/pulumi-ts` shows a red squiggl
 | Min | Segment | Live demo? |
 |----:|---------|-----------|
 | 0–5 | Cover, who I am, housekeeping, agenda | — |
-| 5–14 | What is a skill (SKILL.md, progressive disclosure, skill ≠ MCP ≠ CLAUDE.md) | — |
-| 14–18 | Why DevOps (runbooks → skills; the stat, *with the caveat*) | — |
-| 18–24 | Find & evaluate · **DEMO 1**: `npx skills find`, read a SKILL.md, vet it | ✅ 2 min |
-| 24–34 | Connect & configure: `apm.yml`, **DEMO 2** `apm install` → `.claude/`; skills/MCP/LSP/hooks | ✅ 3 min |
-| 34–40 | **DEMO 3 (the money shot)**: the before/after — same prompt, naked vs configured | ✅ 4 min |
-| 40–47 | Build: simple `golden-path-service`, complex `incident-triage`; **DEMO 4** gather-diagnostics on the crashloop pod | ✅ 3 min |
-| 47–52 | Design principles, operate (update/remove) | — |
-| 52–57 | Turn runbooks into skills; recap | — |
-| 57–60 | Thank you, QR, questions | — |
+| 5–15 | What is a skill (SKILL.md + where it lives, progressive disclosure, anatomy, skill ≠ MCP ≠ CLAUDE.md) | — |
+| 15–19 | Why DevOps should use skills too (the stat, *with the caveat*) | — |
+| 19–24 | Find & evaluate (where to look, how to vet) | — |
+| 24–35 | Connect & configure: `apm.yml`, **DEMO 1** `apm install` → `.claude/`; skills/MCP/LSP/hooks | ✅ 3 min |
+| 35–42 | **DEMO 2 (the money shot)**: "Same prompt, configured vs not" + "Use it" (golden-path triggers) | ✅ 4 min |
+| 42–50 | Build complex safely (`incident-triage`) + six principles; **DEMO 3** gather-diagnostics on the crashloop pod | ✅ 3 min |
+| 50–55 | Keep current · remove clean; recap ("What you've got now") | — |
+| 55–60 | Thank you, QR, questions | — |
 
 ## The cut list (in order — cut from the top when you're behind)
 
 1. **Build-complex deep-dive** (incident-triage internals) → just show the tree, skip the live `gather-diagnostics`.
 2. **Operate** (update/remove) → one sentence, point at the chapters.
-3. **Find & evaluate DEMO 1** → narrate it, don't run `npx skills` live.
-4. **LSP live** → fall back to the screenshot/recording of the red squiggle.
+3. **LSP live** → fall back to the screenshot/recording of the red squiggle.
 
-**Protect at all costs: DEMO 3, the before/after.** It's the only thing that *proves* the
+**Protect at all costs: DEMO 2, the before/after.** It's the only thing that *proves* the
 thesis ("quality depends on how you configure it"). If you show one demo, show that one.
 
-> DEMO 3 is a **sequenced composite of three artifacts**, not one magic prompt: (1) the LSP
+> DEMO 2 is a **sequenced composite of three artifacts**, not one magic prompt: (1) the LSP
 > red squiggle on `publicReadAccess` in `demo/pulumi-ts`, (2) the golden-path skill adding
 > standard tags, (3) the `guard-pulumi.sh` hook stopping `pulumi up/update`. Run them in
 > that order and narrate the "off vs on" — don't imply one keystroke triggers all three.
@@ -49,7 +47,8 @@ thesis ("quality depends on how you configure it"). If you show one demo, show t
 
 - `apm install` stalls → you already ran `prewarm.sh`, so deps are cached; if not, show the
   recorded run and the resulting `.claude/skills/` tree.
-- `npx @pulumi/mcp-server` cold-fetch hangs → it was pre-pulled; otherwise skip the MCP beat.
+- The Pulumi MCP server is **remote** (`https://mcp.ai.pulumi.com/mcp`, OAuth) → do the OAuth
+  dance in Claude Code *before* the talk; if the venue network blocks it, skip the MCP beat.
 - LSP shows nothing → binaries weren't installed or no project; use the recording.
 - Have **screen recordings** of DEMO 2, 3, and 4 on disk as the universal fallback.
 

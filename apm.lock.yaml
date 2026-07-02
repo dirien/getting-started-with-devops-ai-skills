@@ -1,5 +1,5 @@
 lockfile_version: '1'
-generated_at: '2026-06-27T13:59:03.020274+00:00'
+generated_at: '2026-07-01T20:46:11.960009+00:00'
 apm_version: 0.22.0
 dependencies:
 - repo_url: bregman-arie/devops-sre-skills
@@ -129,13 +129,9 @@ mcp_servers:
 mcp_configs:
   pulumi:
     name: pulumi
-    transport: stdio
-    args:
-    - -y
-    - '@pulumi/mcp-server@latest'
-    - stdio
+    transport: http
     registry: false
-    command: npx
+    url: https://mcp.ai.pulumi.com/mcp
 lsp_servers:
 - gopls
 - pyright

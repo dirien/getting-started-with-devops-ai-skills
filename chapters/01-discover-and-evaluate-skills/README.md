@@ -19,7 +19,7 @@ Where to look:
 - **Your own org repo** — the skills your teammates already wrote
 
 ```bash
-# Search across skills (agentskills.io CLI)
+# Search across skills (skills.sh CLI)
 npx skills find kubernetes
 npx skills find terraform
 

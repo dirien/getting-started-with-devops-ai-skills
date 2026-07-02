@@ -7,7 +7,7 @@
 
 ## The per-machine way: `npx skills`
 
-The agentskills.io CLI installs any skill into your agent. This is what the original
+The [skills.sh](https://skills.sh) CLI installs any skill into your agent. This is what the original
 course uses, and it's great for a single laptop:
 
 ```bash
@@ -58,11 +58,10 @@ dependencies:
     # community runbooks: a dep path must point at a SKILL.md, not a category folder
     - bregman-arie/devops-sre-skills/skills/kubernetes/diagnose-crashloop
   mcp:
-    - name: pulumi
-      registry: false                     # self-defined server (use the command below)
-      transport: stdio
-      command: npx
-      args: ["-y", "@pulumi/mcp-server@latest", "stdio"]
+    - name: pulumi                        # Pulumi's hosted MCP server (OAuth on first use)
+      registry: false
+      transport: http
+      url: https://mcp.ai.pulumi.com/mcp
 ```
 
 > Verified: `apm install` integrates **14 skills** into `.claude/skills/` (our 3 + Pulumi's
