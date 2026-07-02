@@ -21,7 +21,8 @@ if command -v go >/dev/null 2>&1; then
 fi
 
 log "kind (for the incident-triage demo cluster)"
-curl -fsSLo /tmp/kind https://kind.sigs.k8s.io/dl/latest/kind-linux-amd64 && sudo install /tmp/kind /usr/local/bin/kind || echo "  (kind install skipped)"
+arch=$(uname -m); case "$arch" in aarch64|arm64) arch=arm64 ;; *) arch=amd64 ;; esac
+curl -fsSLo /tmp/kind "https://kind.sigs.k8s.io/dl/latest/kind-linux-${arch}" && sudo install /tmp/kind /usr/local/bin/kind || echo "  (kind install skipped)"
 
 log "uv (Python tooling)"
 curl -LsSf https://astral.sh/uv/install.sh | sh || true
